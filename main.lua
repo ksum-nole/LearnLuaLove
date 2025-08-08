@@ -3,7 +3,9 @@ y = 100
 bulletspeed = 300
 bullets = {}
 spawnTimer = 0
-spawnInterval = 0.20for i = #bullets, 1, -1 do
+spawnInterval = 0.20 
+
+for i = #bullets, 1, -1 do
     local bullet = bullets[i]
     bullet.x = bullet.x - 15
 
