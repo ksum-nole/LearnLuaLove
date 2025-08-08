@@ -7,4 +7,4 @@ end
         if love.keyboard.is.Down("d") then
             x = x + 5
     end
-end 
+end
