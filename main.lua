@@ -27,7 +27,7 @@ function drawRainbowCircle(cx, cy, radius, segments)
     end
 end
 
-    
+backbullets = {}
 wall = nil
 x = 105
 y = 100
@@ -47,9 +47,12 @@ bleg = 0
 burstactive = false
 blockedbullets = {}
 shadowbullets = {}
-spawnInterval3 = 3
+spawnInterval3 = 1.5 
 spawnTimer3 = 0
-shadowbulletspeed = 400
+shadowbulletspeed = 1700
+backbulletInterval = 2
+backbulletTimer = 0
+backbulletspeed = 800
 
 ---backgroundImage = love.image.newImageData(0, 0)
 
@@ -95,7 +98,12 @@ function love.update(dt)
         height = 70,
         duration = 5  -- seconds
     }
-end
+    end
+    if love.keyboard.isDown("f") then
+        bulletspeed = 500
+        rocketspeed = 300
+        shadowbulletspeed = 700
+    end
 
 
     if wall then
@@ -121,6 +129,17 @@ end
             y = y - 5
         end
         
+        --spawn backbullets rehehehehe
+        backbulletTimer = backbulletTimer + dt
+        if spawnTimer3 >= backbulletInterval then
+            spawnTimer3 = 0
+            backbullets = {
+            x = rect.width,
+            y = math.random(0, rect.height),
+            radius = 5
+            }
+            table.insert(shadowbullets, shadowbullet)
+        end
         -- Spawn shadowbullets rehehehehe
         spawnTimer3 = spawnTimer3 + dt
         if spawnTimer3 >= spawnInterval3 then
@@ -155,23 +174,31 @@ end
             }
             rockets[#rockets + 1] = rocket
         end
-bleg = bleg + dt
+        bleg = bleg + dt
         -- spawn bursts
         burststimer = burststimer + dt
         if not burstactive and burststimer >= burstsinterval then
             burstactive = true
-            
+            bulletspeed = 1
             burststimer = 0
             spawnInterval = 0.000000000000000000000000001
         end
-       
-            if bleg >= 4 then
+        
+            if bleg >= 10 then
                 burstactive = false
                 bleg = 0
                 burstsimer = 0
                 spawnInterval = 0.20
+                bulletspeed = 800
             end
-       
+        --update backbullets rehehehehe
+        -- for i = #shadowbullets, 1, -1 do
+        --     backbullet = backbullets[i]
+        --     backbullet.x = backbullet.x - backbulletspeed * dt
+        --     if checkCollisionCircleCircle(x,y, 25, backbullet.x, backbullet.y, backbullet.radius) then
+        --         alive = false
+        --     end
+        -- end
         --update shadowbullets rehehehehe
         for i = #shadowbullets, 1, -1 do
             local shadowbullet = shadowbullets[i]
@@ -259,7 +286,7 @@ end
 end
      
             end
-        end
+        
     
 
 
@@ -307,6 +334,13 @@ function love.draw()
     alpha = 0.5
     love.graphics.circle("fill", shadowbullet.x, shadowbullet.y, shadowbullet.radius)
 end
-end
+if not alive then
+    love.graphics.setColor(1, 0, 0, 0.3) -- red with transparency
+    love.graphics.rectangle("fill", 0, 0, rect.width, rect.height)
 
+    love.graphics.setColor(1, 1, 1) -- reset color for text
+    love.graphics.print("Game Over", rect.width / 2 - 30, rect.height / 2)
+        end
+    end
+end
 
